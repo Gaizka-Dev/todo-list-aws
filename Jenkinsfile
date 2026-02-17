@@ -4,7 +4,6 @@ pipeline {
 
    stages {
       stage('Get Code') {
-        agent {label 'agente1'}
         steps {
             checkout scmGit(
                branches: [[ name: "develop" ]],
