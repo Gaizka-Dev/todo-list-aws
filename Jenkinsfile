@@ -91,11 +91,17 @@ pipeline {
                git checkout master
                git config merge.ours.driver true
                git merge origin/develop
-               
+
                git remote set-url origin https://${GIT_TOKEN}@github.com/Gaizka-Dev/todo-list-aws.git
                git push origin master
             '''
          }
+      }
+   }
+
+   post {
+      cleanup {
+         deleteDir()
       }
    }
 }
