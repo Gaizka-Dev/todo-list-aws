@@ -86,5 +86,16 @@ pipeline {
             '''
          }
       }
+
+      stage('Promote'){
+         steps{
+            sh '''
+               git checkout master
+               git config merge.ours.driver true
+               git merge origin/develop
+               git push origin master
+            '''
+         }
+      }
    }
 }
