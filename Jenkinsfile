@@ -7,13 +7,12 @@ pipeline {
         steps {
             checkout scmGit(
                branches: [[ name: "develop" ]],
-               extensions: [ cloneOption( shallow: true, depth: 1 )],
-               userRemoteConfigs: [[ url: 'https://github.com/Gaizka-Dev/todo-list-aws' ]]
+               userRemoteConfigs: [[ url: 'https://github.com/Gaizka-Dev/todo-list-aws' ]],
+               credentialsID: 'Git_token'
             )
             sh 'whoami'
             echo WORKSPACE
             sh 'hostname'
-            stash name:'code', includes:'**'
         }
       }
 
