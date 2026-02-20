@@ -1,6 +1,9 @@
 pipeline {
    agent any
    options { skipDefaultCheckout(true) }
+   environment {
+      GIT_TOKEN = credentials('GIT_HUB_TOKEN')
+   }
 
    stages {
       stage('Get Code') {
@@ -8,7 +11,7 @@ pipeline {
             checkout scmGit(
                branches: [[ name: "develop" ]],
                userRemoteConfigs: [[ url: 'https://github.com/Gaizka-Dev/todo-list-aws' ]],
-               credentialsID: 'Git_token'
+               credentialsID: 'GIT_TOKEN'
             )
             sh 'whoami'
             echo WORKSPACE
@@ -18,9 +21,6 @@ pipeline {
 
       stage('Static') {
          steps {
-            sh 'whoami'
-            echo WORKSPACE
-            sh 'hostname'
             sh 'flake8 --exit-zero --format=pylint src > flake8.out'
             recordIssues(
                tools: [flake8(name: 'Flake8.out', pattern: 'flake8.out')])
@@ -70,9 +70,8 @@ pipeline {
                   script: "aws cloudformation describe-stacks --stack-name todo-list-aws-staging --query 'Stacks[0].Outputs[?OutputKey==`BaseUrlApi`].OutputValue' --region us-east-1 --output text",
                   returnStdout: true).trim()
             }
-
             echo "$BASE_URL"
-            sh 'printenv'
+
             sh '''
                export BASE_URL=$BASE_URL
                export PYTHONPATH=$PYTHONPATH:$WORKSPACE
@@ -92,6 +91,8 @@ pipeline {
                git checkout master
                git config merge.ours.driver true
                git merge origin/develop
+               
+               git remote set-url origin https://${GIT_TOKEN}@github.com/Gaizka-Dev/todo-list-aws.git
                git push origin master
             '''
          }
