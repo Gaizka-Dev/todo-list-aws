@@ -18,6 +18,56 @@ pipeline {
             sh 'hostname'
         }
       }
+
+      stage('Deploy'){
+         steps {
+            script {
+               env.BUCKET_NAME = sh(
+                  script: 'echo jenkins-sam-bucket-$(date +%s)',
+                  returnStdout: true
+               ).trim()
+            }
+            echo "$BUCKET_NAME"
+            sh '''
+               pwd
+               sam build
+               sam validate --region us-east-1
+
+               aws s3 mb s3://$BUCKET_NAME --region us-east-1
+            
+               sam deploy \
+                  --config-env production \
+                  --s3-bucket $BUCKET_NAME
+            '''
+         }
+      }
+
+      stage('Rest Test'){
+         steps {
+            script{
+               env.BASE_URL = sh(
+                  script: '''
+                     aws cloudformation \
+                        describe-stacks \
+                        --stack-name todo-list-aws-production \
+                        --query 'Stacks[0].Outputs[?OutputKey==`BaseUrlApi`].OutputValue' \
+                        --region us-east-1 \
+                        --output text
+                  ''',
+                  returnStdout: true).trim()
+            }
+            echo "$BASE_URL"
+
+            sh '''
+               export BASE_URL=$BASE_URL
+               export PYTHONPATH=$PYTHONPATH:$WORKSPACE
+               pytest --junitxml=result-integration.xml ./test/integration/todoApiTest.py -k "test_api_listtodos or test_api_gettodo"
+            '''
+            junit 'result-integration.xml'
+
+            sh 'aws s3 rb s3://$BUCKET_NAME --force'
+         }
+      }
    }
 
    post {
