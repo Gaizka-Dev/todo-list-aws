@@ -33,7 +33,13 @@ pipeline {
             echo WORKSPACE
             sh "pwd && ls -lah"
             sh 'hostname'
-            sh 'bandit --recursive src/ --format custom --output bandit.out --msg-template "{abspath}:{line}: [{test_id}] {msg}"'
+            sh '''
+               bandit \
+                  --recursive src/ \
+                  --format custom \
+                  --output bandit.out \
+                  --msg-template "{abspath}:{line}: [{test_id}] {msg}"
+            '''
             recordIssues(
                sourceCodeRetention: 'LAST_BUILD',
                tools: [pyLint(name: 'Bandit', pattern: 'bandit.out')])
@@ -67,7 +73,14 @@ pipeline {
          steps {
             script{
                env.BASE_URL = sh(
-                  script: "aws cloudformation describe-stacks --stack-name todo-list-aws-staging --query 'Stacks[0].Outputs[?OutputKey==`BaseUrlApi`].OutputValue' --region us-east-1 --output text",
+                  script: '''
+                     aws cloudformation \
+                        describe-stacks \
+                        --stack-name todo-list-aws-staging \
+                        --query 'Stacks[0].Outputs[?OutputKey==`BaseUrlApi`].OutputValue' \
+                        --region us-east-1 \
+                        --output text
+                  ''',
                   returnStdout: true).trim()
             }
             echo "$BASE_URL"
@@ -79,9 +92,7 @@ pipeline {
             '''
             junit 'result-integration.xml'
 
-            sh '''
-               aws s3 rb s3://$BUCKET_NAME --force
-            '''
+            sh 'aws s3 rb s3://$BUCKET_NAME --force'
          }
       }
 
