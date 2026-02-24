@@ -10,12 +10,8 @@ pipeline {
         steps {
             checkout scmGit(
                branches: [[ name: "develop" ]],
-               userRemoteConfigs: [[ url: 'https://github.com/Gaizka-Dev/todo-list-aws' ]],
-               credentialsID: 'GIT_TOKEN'
+               userRemoteConfigs: [[ url: 'https://github.com/Gaizka-Dev/todo-list-aws' ]]
             )
-            sh 'whoami'
-            echo WORKSPACE
-            sh 'hostname'
         }
       }
 
@@ -56,7 +52,6 @@ pipeline {
             }
             echo "$BUCKET_NAME"
             sh '''
-               pwd
                sam build
                sam validate --region us-east-1
 
