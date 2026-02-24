@@ -10,12 +10,8 @@ pipeline {
         steps {
             checkout scmGit(
                branches: [[ name: "master" ]],
-               userRemoteConfigs: [[ url: 'https://github.com/Gaizka-Dev/todo-list-aws' ]],
-               credentialsID: 'GIT_TOKEN'
+               userRemoteConfigs: [[ url: 'https://github.com/Gaizka-Dev/todo-list-aws' ]]
             )
-            sh 'whoami'
-            echo WORKSPACE
-            sh 'hostname'
         }
       }
 
