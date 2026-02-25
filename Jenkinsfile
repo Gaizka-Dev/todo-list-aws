@@ -25,10 +25,6 @@ pipeline {
 
       stage('Security') {
          steps {
-            sh 'whoami'
-            echo WORKSPACE
-            sh "pwd && ls -lah"
-            sh 'hostname'
             sh '''
                bandit \
                   --recursive src/ \
