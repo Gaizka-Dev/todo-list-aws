@@ -15,8 +15,8 @@ pipeline {
                branches: [[ name: "master" ]],
                userRemoteConfigs: [[ url: 'https://github.com/Gaizka-Dev/todo-list-aws' ]]
             )
+            stash name:'code', includes:'**'
         }
-        stash name:'code', includes:'**'
       }
 
       stage('Deploy'){
