@@ -31,7 +31,10 @@ pipeline {
       }
 
       stage('Security') {
+         agent {label 'agente1'}
          steps {
+            sh 'hostname'
+            echo WORKSPACE
             sh '''
                bandit \
                   --recursive src/ \
@@ -46,7 +49,9 @@ pipeline {
       }
 
       stage('Deploy'){
+         agent {label 'agente2'}
          steps {
+            unstash name:'code'
             script {
                env.BUCKET_NAME = sh(
                   script: 'echo jenkins-sam-bucket-$(date +%s)',
@@ -70,7 +75,6 @@ pipeline {
       stage('Rest Test'){
          agent {label 'agente2'}
          steps {
-            unstash name:'code'
             sh 'hostname'
             echo WORKSPACE
             script{
