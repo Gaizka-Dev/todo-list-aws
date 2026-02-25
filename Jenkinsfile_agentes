@@ -7,10 +7,10 @@ pipeline {
 
    stages {
       stage('Get Code') {
-      agent {label 'agente1'}
-         sh 'hostname'
-         echo WORKSPACE
+         agent {label 'agente1'}
          steps {
+            sh 'hostname'
+            echo WORKSPACE
             checkout scmGit(
                branches: [[ name: "master" ]],
                userRemoteConfigs: [[ url: 'https://github.com/Gaizka-Dev/todo-list-aws' ]]
