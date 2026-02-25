@@ -6,8 +6,8 @@ pipeline {
    }
 
    stages {
-      agent {label 'agente1'}
       stage('Get Code') {
+      agent {label 'agente1'}
          sh 'hostname'
          echo WORKSPACE
          steps {
