@@ -79,11 +79,10 @@ pipeline {
                pytest --junitxml=result-integration.xml ./test/integration/todoApiTest.py -k "test_api_listtodos or test_api_gettodo"
             '''
             junit 'result-integration.xml'
-
-            sh 'aws s3 rb s3://$BUCKET_NAME --force'
          }
          post {
             cleanup {
+               sh 'aws s3 rb s3://$BUCKET_NAME --force'
                deleteDir()
             }
          }
