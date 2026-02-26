@@ -10,6 +10,7 @@ pipeline {
          agent {label 'agente1'}
          steps {
             sh 'hostname'
+            sh 'whoami'
             echo WORKSPACE
             checkout scmGit(
                branches: [[ name: "master" ]],
@@ -23,6 +24,7 @@ pipeline {
          agent {label 'agente1'}
          steps {
             sh 'hostname'
+            sh 'whoami'
             echo WORKSPACE
             script {
                env.BUCKET_NAME = sh(
@@ -55,6 +57,7 @@ pipeline {
          steps {
             unstash name:'code'
             sh 'hostname'
+            sh 'whoami'
             echo WORKSPACE
             script{
                env.BASE_URL = sh(
