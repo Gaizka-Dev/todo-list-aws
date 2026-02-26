@@ -12,6 +12,7 @@ pipeline {
                branches: [[ name: "develop" ]],
                userRemoteConfigs: [[ url: 'https://github.com/Gaizka-Dev/todo-list-aws' ]]
             )
+            sh "wget --output-document=samconfig.toml https://raw.githubusercontent.com/Gaizka-Dev/todo-list-aws-config/staging/samconfig.toml"
         }
       }
 
@@ -82,8 +83,6 @@ pipeline {
                pytest --junitxml=result-integration.xml ./test/integration/todoApiTest.py
             '''
             junit 'result-integration.xml'
-
-            sh 'aws s3 rb s3://$BUCKET_NAME --force'
          }
       }
 
@@ -103,6 +102,7 @@ pipeline {
 
    post {
       cleanup {
+         sh 'aws s3 rb s3://$BUCKET_NAME --force || true'
          deleteDir()
       }
    }
