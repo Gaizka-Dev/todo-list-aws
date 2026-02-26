@@ -10,6 +10,7 @@ pipeline {
          agent {label 'agente1'}
          steps {
             sh 'hostname'
+            sh 'whoami'
             echo WORKSPACE
             checkout scmGit(
                branches: [[ name: "develop" ]],
@@ -23,6 +24,7 @@ pipeline {
          agent {label 'agente1'}
          steps {
             sh 'hostname'
+            sh 'whoami'
             echo WORKSPACE
             sh 'flake8 --exit-zero --format=pylint src > flake8.out'
             recordIssues(
@@ -34,6 +36,7 @@ pipeline {
          agent {label 'agente1'}
          steps {
             sh 'hostname'
+            sh 'whoami'
             echo WORKSPACE
             sh '''
                bandit \
@@ -76,6 +79,7 @@ pipeline {
          agent {label 'agente2'}
          steps {
             sh 'hostname'
+            sh 'whoami'
             echo WORKSPACE
             script{
                env.BASE_URL = sh(
